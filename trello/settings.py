@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core.apps.CoreConfig',
     'users.apps.UsersConfig',
-    'workspaces.apps.WorkspacsConfig',
-    'boards.apps.BoardsConfig'
+    'boards.apps.BoardsConfig',
+    'workspaces.apps.WorkspacesConfig',
 ]
 
 MIDDLEWARE = [
