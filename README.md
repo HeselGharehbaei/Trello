@@ -18,7 +18,7 @@ And it is being done in collaboration with these following developers:
 ------------------------------------
 ### the initial ERD of project:
 
-![ER Diagram](Database-ER-diagram.jpeg)
+![ER Diagram](Database-ER-diagram.png)
 
 ------------------------------------
 
