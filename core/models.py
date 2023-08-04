@@ -20,6 +20,16 @@ class TimeStampMixin(models.Model):
         abstract = True
 
 
+class SoftQuerySet(QuerySet):
+    def delete(self):
+        return self.update(is_deleted = True, deleted_at = timezone.now())  
+    
+
+class SoftManager(Manager):
+    def get_queryset(self) -> QuerySet:
+        return SoftQuerySet(self.model, self._db).filter(Q(is_deleted=False) | Q(is_deleted__isnull= True))    
+  
+
 class SoftDeleteModel(models.Model):
     objects = SoftManager()
 
