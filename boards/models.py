@@ -59,3 +59,12 @@ class Task(BaseModel, TimeStampMixin):
     )
     label = models.ManyToManyField("Label", blank=True, null=True)
 
+
+class Label(TimeStampMixin):
+    board = models.ForeignKey(
+        "Board",
+        on_delete=models.CASCADE,
+        related_name='labels',
+    )
+    title = models.CharField(max_length=50, blank=True, null=True)
+    color = models.CharField(max_length=50)
