@@ -1,5 +1,4 @@
 from django.db import models
-from users.models import User
 from core.models import BaseModel , TimeStampMixin
 
 
@@ -9,7 +8,7 @@ class Workspace(BaseModel,TimeStampMixin):
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
     members = models.ManyToManyField(
-        User, through='WorkspacesMembership', through_fields=('Workspace', 'member'))
+        "users.User", through='WorkspacesMembership', through_fields=('Workspace', 'member'))
 
 
 
