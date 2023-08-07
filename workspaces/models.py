@@ -5,7 +5,7 @@ from core.models import BaseModel , TimeStampMixin
 
 class Workspace(BaseModel,TimeStampMixin):
     owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='owned_workspace')
+        "users.User", on_delete=models.CASCADE, related_name='owned_workspace')
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
     members = models.ManyToManyField(
@@ -25,7 +25,7 @@ class WorkspacesMembership(TimeStampMixin, BaseModel):
     Workspace = models.ForeignKey(
         Workspace, on_delete=models.CASCADE)
     member = models.ForeignKey(
-        User, on_delete=models.CASCADE)
+        'User', on_delete=models.CASCADE)
     access_level = models.IntegerField(choices=Access.choices, default=1)
   
 
