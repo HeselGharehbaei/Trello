@@ -1,3 +1,38 @@
+from boards.models import Board
 from django.db import models
+from users.models import User
+from core.models import BaseModel , TimeStampMixin
 
-# Create your models here.
+
+class Workspaces(BaseModel,TimeStampMixin):
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='owned_workspaces')
+    title = models.CharField(max_length=255, blank=False, null=False)
+    description = models.TextField(blank=True, null=False)
+    members = models.ManyToManyField(
+        User, through='WorkspacesMembership', through_fields=('Workspaces', 'member'))
+
+    boards = models.ForeignKey(
+        Board,  related_name='boards')
+
+    def __str__(self):
+        return self.title
+
+
+class WorkspacesMembership(TimeStampMixin, BaseModel):
+    class Access(models.IntegerChoices):
+        MEMBER = 1           
+        ADMIN = 2             
+
+    Workspaces = models.ForeignKey(
+        Workspaces, on_delete=models.CASCADE)
+    member = models.ForeignKey(
+        User, on_delete=models.CASCADE)
+    access_level = models.IntegerField(choices=Access.choices, default=1)
+  
+
+    def __str__(self):
+        return f'{self.member.full_name} , {self.project.title}'
+
+    class Meta:
+        unique_together = ('project', 'member')
