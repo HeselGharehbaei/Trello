@@ -11,6 +11,9 @@ class Workspace(BaseModel,TimeStampMixin):
         "users.User", through='WorkspacesMembership', through_fields=('Workspace', 'member'))
 
 
+    def get_boards(self):
+        return self.boards.all()
+    
 
     def __str__(self):
         return self.title
@@ -21,15 +24,17 @@ class WorkspacesMembership(TimeStampMixin, BaseModel):
         MEMBER = 1           
         ADMIN = 2             
 
+
     Workspace = models.ForeignKey(
         Workspace, on_delete=models.CASCADE)
     member = models.ForeignKey(
-        'User', on_delete=models.CASCADE)
-    access_level = models.IntegerField(choices=Access.choices, default=1)
+        'users.User', related_name='Workspace_member',on_delete=models.CASCADE)
+    access_level = models.IntegerField(choices=Access.choices, default=1)  
   
 
     def __str__(self):
         return f'{self.member.full_name} , {self.project.title}'
+
 
     class Meta:
         unique_together = ('project', 'member')
