@@ -93,3 +93,23 @@ class Label(TimeStampMixin):
     )
     title = models.CharField(max_length=50, blank=True, null=True)
     color = models.CharField(max_length=50)
+
+
+class Comment(BaseModel, TimeStampMixin):
+    task = models.ForeignKey(
+        "Task",
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    text = models.TextField(
+        verbose_name=_("Comment"),
+        help_text=_("enter the comment"),
+        max_length=200,
+        null=True,
+        blank=True,
+    )
