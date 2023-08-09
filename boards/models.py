@@ -27,6 +27,9 @@ class Board(BaseModel, TimeStampMixin):
         null=True,
     )
 
+    def get_list(self):
+        return self.lists.all()
+
 
 class Task(BaseModel, TimeStampMixin):
     list_ = models.ForeignKey(
