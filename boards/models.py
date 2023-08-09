@@ -84,6 +84,9 @@ class Task(BaseModel, TimeStampMixin):
     )
     label = models.ManyToManyField("Label", blank=True, null=True)
 
+    def get_comment(self):
+        return self.comments.all()
+
 
 class Label(BaseModel, TimeStampMixin):
     board = models.ForeignKey(
