@@ -1,6 +1,4 @@
-from django.db import models
-from core.models import BaseModel, TimeSTampMixin
-from django.utils.translation import gettext_lazy as _
+
 
 
 
@@ -130,3 +128,23 @@ class Comment(BaseModel, TimeSTampMixin):
         blank=True,
     )
 
+
+class List(BaseModel, TimeSTampMixin):
+    board = models.ForeignKey(
+        "Board",
+        on_delete=models.CASCADE,
+        related_name="lists",
+    )
+    title = models.CharField(
+        verbose_name=_("Title"),
+        help_text=_("enter the title"),
+        max_length=50,
+        null=False,
+        blank=False,
+    ) 
+    order = models.DecimalField(
+        max_digits=7,
+        decimal_places=6,
+        blank=True,
+        null=True,
+    )
