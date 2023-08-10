@@ -21,3 +21,7 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
     def __str__(self):
         return f'{self.username}' 
     
+
+    def get_tasks(self):
+        return self.tasks.all()
+    
