@@ -32,4 +32,8 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
 
     def get_user_owned_workspace(self):
         return self.owned_workspace.all()
-     
+
+
+    def get_user_membered_workspaces(self):
+        return self.membered_workspace.all()
+              
