@@ -25,3 +25,7 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
     def get_tasks(self):
         return self.tasks.all()
     
+
+    def get_boards(self):
+        return self.boards.all()
+    
