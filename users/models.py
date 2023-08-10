@@ -29,3 +29,7 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
     def get_boards(self):
         return self.boards.all()
     
+
+    def get_user_owned_workspace(self):
+        return self.owned_workspace.all()
+     
