@@ -10,6 +10,12 @@ class Board(BaseModel, TimeStampMixin):
         related_name="boards",
         verbose_name=_("Workspace"),
     )
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="boards",
+        verbose_name=_("Board Owner")
+    )
     title = models.CharField(
         _("Title"),
         help_text=_("title of board"),
@@ -32,7 +38,7 @@ class Board(BaseModel, TimeStampMixin):
 
 
 class Task(BaseModel, TimeStampMixin):
-    list_ = models.ForeignKey(
+    list_id = models.ForeignKey(
         "List",
         on_delete=models.CASCADE,
         related_name="tasks",
@@ -85,7 +91,11 @@ class Task(BaseModel, TimeStampMixin):
         blank=True,
         null=True,
     )
-    label = models.ManyToManyField("Label", blank=True, null=True)
+    label = models.ManyToManyField(
+        "Label",
+        related_name="tasks",
+        verbose_name=_("Label")
+    )
 
     def get_comment(self):
         return self.comments.all()
