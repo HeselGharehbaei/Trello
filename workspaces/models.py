@@ -33,8 +33,8 @@ class WorkspacesMembership(TimeStampMixin, BaseModel):
   
 
     def __str__(self):
-        return f'{self.member.full_name} , {self.project.title}'
+        return f'{self.member.full_name} , {self.Workspace.title}'
 
 
     class Meta:
-        unique_together = ('project', 'member')
+        unique_together = ('Workspace', 'member')
