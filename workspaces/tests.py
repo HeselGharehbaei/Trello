@@ -21,7 +21,7 @@ class WorkspaceModelTest(TestCase):
         )
 
         self.assertEqual(membership.access_level, WorkspacesMembership.Access.MEMBER)
-        self.assertEqual(str(membership), f'{self.user.full_name}, {self.workspace.title}')
+        self.assertEqual(str(membership), f'{self.user.username}, {self.workspace.title}')
 
     def test_workspaces_membership_unique_together(self):
         membership1 = WorkspacesMembership.objects.create(
@@ -40,5 +40,5 @@ class WorkspaceModelTest(TestCase):
         membership = WorkspacesMembership.objects.create(
             Workspace=self.workspace, member=self.user, access_level=WorkspacesMembership.Access.MEMBER
         )
-        self.assertEqual(str(membership), f'{self.user.full_name}, {self.workspace.title}')
+        self.assertEqual(str(membership), f'{self.user.username}, {self.workspace.title}')
 
