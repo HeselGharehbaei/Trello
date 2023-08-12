@@ -38,7 +38,7 @@ class Board(BaseModel, TimeStampMixin):
 
 
 class Task(BaseModel, TimeStampMixin):
-    list_id = models.ForeignKey(
+    board_list = models.ForeignKey(
         "List",
         on_delete=models.CASCADE,
         related_name="tasks",
