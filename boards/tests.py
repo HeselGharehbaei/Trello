@@ -77,4 +77,12 @@ class TestBoard(TestCase):
             "Personal",
             "blue",
         )
-
+    
+    def test_get_list(self):
+        lists_of_board1 = self.board1.get_list()
+        lists_info = [lists.title for lists in lists_of_board1]
+        self.assertEqual(lists_info, ["To Do", "Done"])
+        
+        lists_of_board2 = self.board2.get_list()
+        lists_info = [lists.title for lists in lists_of_board2]
+        self.assertEqual(lists_info, [])
