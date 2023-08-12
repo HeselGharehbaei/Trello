@@ -8,7 +8,8 @@ class Workspace(BaseModel,TimeStampMixin):
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
     members = models.ManyToManyField(
-        "users.User", through='WorkspacesMembership', through_fields=('Workspace', 'member'))
+        "users.User", through='WorkspacesMembership', through_fields=('Workspace', 'member')
+        related_name='membered_workspace')
 
 
     def get_boards(self):
@@ -25,15 +26,16 @@ class WorkspacesMembership(TimeStampMixin, BaseModel):
         ADMIN = 2             
 
 
-    Workspace = models.ForeignKey(
+    workspace = models.ForeignKey(
         Workspace, on_delete=models.CASCADE)
+    
     member = models.ForeignKey(
-        'users.User', related_name='Workspace_member',on_delete=models.CASCADE)
+        'users.User', related_name='workspace_member',on_delete=models.CASCADE)
     access_level = models.IntegerField(choices=Access.choices, default=1)  
   
 
     def __str__(self):
-        return f'{self.member.full_name} , {self.Workspace.title}'
+        return f'{self.member.username}, {self.Workspace.title}'
 
 
     class Meta:
