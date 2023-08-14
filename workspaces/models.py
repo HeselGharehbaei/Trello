@@ -38,4 +38,4 @@ class WorkspacesMembership(TimeStampMixin, BaseModel):
 
 
     class Meta:
-        unique_together = ('Workspace', 'member')
+        unique_together = ('workspace', 'member')

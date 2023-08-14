@@ -1,6 +1,6 @@
 from django.db import models
 from uuid import uuid4
-from django.db.models import QuerySet, Manager
+from django.db.models import QuerySet, Manager, Q
 from django.utils import timezone
 
 
@@ -14,6 +14,7 @@ class BaseModel(models.Model):
 
 class TimeStampMixin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
     class Meta:
