@@ -8,8 +8,7 @@ class Workspace(BaseModel,TimeStampMixin):
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
     members = models.ManyToManyField(
-        "users.User", through='WorkspacesMembership', through_fields=('Workspace', 'member')
-        related_name='membered_workspace')
+        "users.User", through='WorkspacesMembership', through_fields=('Workspace', 'member'),related_name='membered_workspace')
 
 
     def get_boards(self):
