@@ -38,7 +38,7 @@ class WorkspaceModelTest(TestCase):
 
     def test_workspaces_membership_str_method(self):
         membership = WorkspacesMembership.objects.create(
-            Workspace=self.workspace, member=self.user, access_level=WorkspacesMembership.Access.MEMBER
+            workspace=self.workspace, member=self.user, access_level=WorkspacesMembership.Access.MEMBER
         )
         self.assertEqual(str(membership), f'{self.user.username}, {self.workspace.title}')
 
