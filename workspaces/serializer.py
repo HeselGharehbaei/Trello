@@ -23,3 +23,11 @@ class WorkspaceWithMembersSerializer(serializers.ModelSerializer):
 
     def get_boards(self, obj):
         return [board.name for board in obj.get_boards()]
+    
+class WorkspacesMembershipDetailSerializer(serializers.ModelSerializer):
+    workspace = WorkspaceSerializer()
+    member = serializers.StringRelatedField()
+
+    class Meta:
+        model = WorkspacesMembership
+        fields = '__all__'
