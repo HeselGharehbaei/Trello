@@ -1,6 +1,6 @@
 from django.db import models
 from uuid import uuid4
-from django.db.models import QuerySet, Manager
+from django.db.models import QuerySet, Manager, Q
 from django.utils import timezone
 
 
