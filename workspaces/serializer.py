@@ -12,3 +12,14 @@ class WorkspacesMembershipSerializer(serializers.ModelSerializer):
         model = WorkspacesMembership
         fields = '__all__'  
 
+
+class WorkspaceWithMembersSerializer(serializers.ModelSerializer):
+    members = serializers.StringRelatedField(many=True)  
+    boards = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Workspace
+        fields = '__all__'
+
+    def get_boards(self, obj):
+        return [board.name for board in obj.get_boards()]
