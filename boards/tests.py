@@ -86,4 +86,10 @@ class TestBoard(TestCase):
         lists_of_board2 = self.board2.get_list()
         lists_info = [lists.title for lists in lists_of_board2]
         self.assertEqual(lists_info, [])
-                
+     
+    def test_get_comment(self):
+        comments_of_task = self.task1.get_comment()
+        comment_info = [comment.text for comment in comments_of_task ]
+        self.assertEqual(comment_info,["Very well mate", "Tnx buddy"])
+
+          
