@@ -37,3 +37,28 @@ class TaskAdmin(admin.ModelAdmin):
         'created_at',
     )
 
+
+@admin.register(Label)
+class LabelAdmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'color',
+    )
+    search_fields = (
+        'title',
+    )
+    list_filter = (
+        'created_at',
+    )
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'text',
+    )
+    list_filter = (
+        'created_at',
+    )
+
