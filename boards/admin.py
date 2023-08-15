@@ -62,3 +62,15 @@ class CommentAdmin(admin.ModelAdmin):
         'created_at',
     )
 
+@admin.register(List)
+class ListAdmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'order',
+    )
+    search_fields = (
+        'title',
+    )
+    list_filter = (
+        'created_at',
+    )
