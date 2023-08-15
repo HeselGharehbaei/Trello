@@ -10,12 +10,17 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
         _("email address"),
         help_text=_("Email address of user"),  
         unique=True,
-        blank=True
+        blank=True,
     )
     image = models.FileField(
         _("Image"), 
-        upload_to="uploads/photos", blank= True, null= True
+        upload_to="uploads/photos", 
+        blank= True, 
+        null= True,
     )
+
+    def get_user_owned_workspace(self):
+        return self.owned_workspace.all()
 
 
     def __str__(self):
