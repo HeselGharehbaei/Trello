@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import Board, Task, Label, Comment, List
 
+
 @admin.register(Board)
 class BoradAdmin(admin.ModelAdmin):
-    
     list_display = (
         'owner',
         'title',
@@ -18,6 +18,7 @@ class BoradAdmin(admin.ModelAdmin):
     raw_id_fields = (
         'owner',
     )
+
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
@@ -61,6 +62,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = (
         'created_at',
     )
+
 
 @admin.register(List)
 class ListAdmin(admin.ModelAdmin):
