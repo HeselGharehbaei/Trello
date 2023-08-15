@@ -1,20 +1,20 @@
 from django.test import TestCase
 from workspaces.models import Workspace
 from users.models import User
-from models import Board, List, Task, Comment
+from .models import Board, List, Task, Comment
 
 
 class TestBoard(TestCase):
     def setup(self):
-        self.user1 = User.objects.create(
+        self.user1 = User.objects.create_user(
             username="Ralph",
             password="123456",
         )
-        self.user2 = User.objects.create(
+        self.user2 = User.objects.create_user(
             username="Penelope",
             password="111222333",
         )
-        self.user3 = User.objects.create(
+        self.user3 = User.objects.create_user(
             username="Felix",
             password="fixitflix",
         )
@@ -86,3 +86,13 @@ class TestBoard(TestCase):
         lists_of_board2 = self.board2.get_list()
         lists_info = [lists.title for lists in lists_of_board2]
         self.assertEqual(lists_info, [])
+     
+    def test_get_comment(self):
+        comments_of_task = self.task1.get_comment()
+        comment_info = [comment.text for comment in comments_of_task ]
+        self.assertEqual(comment_info,["Very well mate", "Tnx buddy"])
+
+    def test_get_task(self):
+        tasks_of_list1 =  self.list1.get_task()
+        task_info = [task.title for task in tasks_of_list1]
+        self.assertEqual(task_info,["Set SQL Queries", "Write Models"])     

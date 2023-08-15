@@ -150,3 +150,5 @@ class List(BaseModel, TimeStampMixin):
         blank=True,
         null=True,
     )
+    def get_task(self):
+        return self.tasks.all()    
