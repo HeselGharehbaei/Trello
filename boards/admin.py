@@ -18,3 +18,22 @@ class BoradAdmin(admin.ModelAdmin):
     raw_id_fields = (
         'owner',
     )
+
+@admin.register(Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'description',
+        'deadline',
+        'start_date',
+        'finished_date',
+        'time_spent',
+        'order',
+    )
+    search_fields = (
+        'title',
+    )
+    list_filter = (
+        'created_at',
+    )
+
