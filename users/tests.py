@@ -27,3 +27,10 @@ class UserTestCase(TestCase):
         owned_workspaces= self.hesel.get_user_owned_workspace()
         list_of_owned_workspaces_title= [workspace.title for workspace in owned_workspaces]
         self.assertEqual(list_of_owned_workspaces_title, ["workspace_1", "workspace_2"])
+
+    def test_get_user_membered_workspaces(self):
+        self.hesel_workspace_1.members.add(self.pouriya)
+        self.hesel_workspace_2.members.add(self.pouriya)
+        membered_workspaces= self.pouriya.get_user_membered_workspaces()
+        list_of_membered_workspaces_title= [workspace.title for workspace in membered_workspaces]
+        self.assertEqual(list_of_membered_workspaces_title, ["workspace_1", "workspace_2"])
