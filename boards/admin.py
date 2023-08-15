@@ -2,6 +2,18 @@ from django.contrib import admin
 from .models import Board, Task, Label, Comment, List
 
 
+class ListInline(admin.TabularInline):
+    model = List
+
+
+class CommentInline(admin.TabularInline):
+    model = Comment
+
+
+class TaskInline(admin.TabularInline):
+    model = Task
+
+
 @admin.register(Board)
 class BoradAdmin(admin.ModelAdmin):
     list_display = (
@@ -18,6 +30,9 @@ class BoradAdmin(admin.ModelAdmin):
     raw_id_fields = (
         'owner',
     )
+    inlines = [
+        ListInline,
+    ]
 
 
 @admin.register(Task)
@@ -37,6 +52,9 @@ class TaskAdmin(admin.ModelAdmin):
     list_filter = (
         'created_at',
     )
+    inlines = [
+        CommentInline,
+    ]
 
 
 @admin.register(Label)
@@ -76,3 +94,6 @@ class ListAdmin(admin.ModelAdmin):
     list_filter = (
         'created_at',
     )
+    inlines = [
+        TaskInline,
+    ]
