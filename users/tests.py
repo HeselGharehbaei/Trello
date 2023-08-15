@@ -34,3 +34,11 @@ class UserTestCase(TestCase):
         membered_workspaces= self.pouriya.get_user_membered_workspaces()
         list_of_membered_workspaces_title= [workspace.title for workspace in membered_workspaces]
         self.assertEqual(list_of_membered_workspaces_title, ["workspace_1", "workspace_2"])
+
+    def test_get_completed_task(self):
+        Task.objects.create(user= self.hesel, board_list= self.list_1, title= "task_1", finished_date= timezone.make_aware(datetime(2023,10,30, 23, 12, 10)))
+        Task.objects.create(user= self.hesel, board_list= self.list_1, title= "task_2", finished_date= timezone.make_aware(datetime(2023,10,30, 23, 40, 10)))
+        completed_tasks = self.hesel.get_completed_task()
+        completed_tasks_list= [completed_task.title for completed_task in completed_tasks]
+        self.assertEqual(completed_tasks_list, ["task_1", "task_2"])   
+        
