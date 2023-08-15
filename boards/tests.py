@@ -92,4 +92,7 @@ class TestBoard(TestCase):
         comment_info = [comment.text for comment in comments_of_task ]
         self.assertEqual(comment_info,["Very well mate", "Tnx buddy"])
 
-          
+    def test_get_task(self):
+        tasks_of_list1 =  self.list1.get_task()
+        task_info = [task.title for task in tasks_of_list1]
+        self.assertEqual(task_info,["Set SQL Queries", "Write Models"])     
