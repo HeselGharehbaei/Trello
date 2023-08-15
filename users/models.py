@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from core.models import BaseModel
 from core.models import SoftDeleteModel
+from boards.models import List
 
 
 class User(AbstractUser, BaseModel, SoftDeleteModel):
@@ -24,6 +25,10 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
     
     def get_user_membered_workspaces(self):
         return self.workspace_member.all()
+    
+    def get_completed_task(self):
+        done_list = List.objects.get(title="Done")
+        return self.tasks.filter(list=done_list, finished_date__isnull= False) 
 
 
     def __str__(self):
