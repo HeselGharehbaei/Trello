@@ -4,6 +4,10 @@ from workspaces.models import Workspace
 from django.utils.translation import gettext_lazy as _
 
 
+class WorkspaceInline(admin.TabularInline):
+    model = Workspace
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'first_name', 'last_name', 'is_active', 'email', 'date_joined',)
@@ -21,5 +25,4 @@ class UserAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
-
+    inlines = [WorkspaceInline]
