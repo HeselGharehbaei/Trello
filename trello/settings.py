@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'boards.apps.BoardsConfig',
     'workspaces.apps.WorkspacesConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
