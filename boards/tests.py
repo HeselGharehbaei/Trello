@@ -29,11 +29,13 @@ class TestBoard(TestCase):
             self.user1,
             "Back-end Team",
         )
+        board1 = self.board1
         self.board2 = Board.objects.create(
             self.workspace1,
             self.user2,
             "Front-end Team",
         )
+        board2 = self.board2
         self.list1 = List.objects.create(
             self.board1,
             "To Do"
@@ -79,7 +81,7 @@ class TestBoard(TestCase):
         )
     
     def test_get_list(self):
-        lists_of_board1 = self.board1.get_list()
+        lists_of_board1 = board1.get_list()
         lists_info = [lists.title for lists in lists_of_board1]
         self.assertEqual(lists_info, ["To Do", "Done"])
         
