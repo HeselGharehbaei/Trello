@@ -15,7 +15,7 @@ class TaskInline(admin.TabularInline):
 
 
 @admin.register(Board)
-class BoradAdmin(admin.ModelAdmin):
+class BoardAdmin(admin.ModelAdmin):
     list_display = (
         'owner',
         'title',
@@ -26,9 +26,6 @@ class BoradAdmin(admin.ModelAdmin):
     )
     list_filter = (
         'created_at',
-    )
-    raw_id_fields = (
-        'owner',
     )
     inlines = [
         ListInline,
