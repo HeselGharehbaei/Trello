@@ -5,7 +5,7 @@ from .models import Task
 from .models import Comment
 from .models import Label
 
-class BoradSerializer(serializers.ModelSerializer):
+class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
         fields = '__all__'
@@ -29,8 +29,8 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LableSerializer(serializers.ModelSerializer):
+class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
-        fiels = '__all__'
+        fields = '__all__'
         
