@@ -43,3 +43,8 @@ class WorkspacesMembershipSerializer(serializers.ModelSerializer):
         fields = ['id',  'username',
                   'email',  'access_level']
 
+
+class WorkspaceshortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workspace
+        fields = ['id', 'title']
