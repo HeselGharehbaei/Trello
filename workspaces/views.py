@@ -30,3 +30,16 @@ class workspaceDetail(APIView):
         work.delete()
         return Response(status=status.HTTP_200_OK)
 
+
+class WorkspacesMemberDetail(APIView):
+    serializer_class = WorkspacesMembershipSerializer
+ 
+
+    def get_object(self, pk):
+        obj = get_object_or_404(WorkspacesMembership, pk=pk)
+        return obj
+
+
+
+
+
