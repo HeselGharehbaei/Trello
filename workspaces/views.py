@@ -40,6 +40,10 @@ class WorkspacesMemberDetail(APIView):
         return obj
 
 
+    def delete(self, request, pk):
+        wmed = self.get_object(pk)
+        wmed.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
