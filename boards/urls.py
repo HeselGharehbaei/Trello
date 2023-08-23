@@ -4,4 +4,5 @@ from .views import BoardListAPIView
 
 urlpatterns = [
     path('', BoardListAPIView.as_view())
+    path()
 ]
