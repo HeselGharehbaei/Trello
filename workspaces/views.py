@@ -16,3 +16,12 @@ class workspaceDetail(APIView):
         work = get_object_or_404(Workspace, pk=pk)
         serializer = WorkspaceSerializer(work, context={"request": request})
         return Response(serializer.data)
+
+    def put(self, request, pk):
+        work = get_object_or_404(Workspace, pk=pk)
+        serializer = WorkspaceSerializer(work, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
