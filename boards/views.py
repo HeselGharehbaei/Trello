@@ -2,29 +2,21 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from .serializers import BoardSerializer
-from .serializers import ListSerializer
-from .serializers import TaskSerializer
-from .serializers import CommentSerializer
-from .serializers import LabelSerializer
-from .models import Board
-from .models import List
-from .models import Task
-from .models import Comment
-from .models import Label
+from .serializers import (
+    BoardSerializer,
+    ListSerializer,
+    TaskSerializer,
+    CommentSerializer,
+    LabelSerializer,
+)
+from .models import (
+    Board,
+    List,
+    Task,
+    Comment,
+    Label,
+)
 from rest_framework import status
-
-
-class BoardListAPIView(APIView):
-    serializer_class = BoardSerializer
-
-    def get(self, Request):
-        boards = Board.objects.all()
-        serializer = self.serializer_class(instance=boards, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-    
-    # def post(self, Request):-------------------------------------------------------------------------------------------------------------------------------------------
-
 
 
 class BoardsView(APIView):
@@ -32,9 +24,7 @@ class BoardsView(APIView):
         boards = Board.objects.all()
         srz_boards = BoardSerializer(instance=boards, many=True)
         return Response(srz_boards.data, status=status.HTTP_200_OK)
-
-
-class BoardCreateView(APIView):
+    
     def post(self, request):
         srz_board = BoardSerializer(data=request.POST)
         if srz_board.is_valid():
@@ -43,19 +33,17 @@ class BoardCreateView(APIView):
         return Response(srz_board.errors, status=status.HTTP_400_BAD_REQUEST)  
 
 
-class BoardupdateView(APIView):
-    def put(self, request, pk):
-        board = Board.objects.get(pk=pk)
+class BoardUpdateView(APIView):
+    def put(self, request, id):
+        board = Board.objects.get(pk=id)
         srz_board =  BoardSerializer(instance=board, data=request.data, partial=True)
         if srz_board.is_valid():
             srz_board.save()
             return Response(srz_board.data, status=status.HTTP_200_OK)
         return Response(srz_board.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class BoardDeleteView(APIView):
-    def delete(self, request, pk):
-        board = Board.objects.get(pk=pk)
+    def delete(self, request, id):
+        board = Board.objects.get(pk=id)
         board.delete()
         return Response({'message': 'board deleted'}, status=status.HTTP_200_OK)
 
@@ -66,8 +54,6 @@ class ListView(APIView):
         srz_list = ListSerializer(instance=list, many=True)
         return Response(srz_list.data, status=status.HTTP_200_OK)
     
-
-class ListCreatView(APIView):
     def post(self, request):
         srz_list = ListSerializer(data=request.POST)
         if srz_list.is_valid():
@@ -85,28 +71,35 @@ class ListUpdateView(APIView):
             return Response(srz_list.data, status=status.HTTP_200_OK)
         return Response(srz_list.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
-class ListDeleteView(APIView):
     def delete(self, request, pk):
         list = List.objects.get(pk=pk)
         list.delete()
         return Response({"masage: list deleted"}, status=status.HTTP_200_OK) 
 
 
+class CommentView(APIView):
+    def get(self, request):
+        comment = Comment.objects.all()
+        srz_comment = CommentSerializer(instance=comment)
+        return Response(srz_comment.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        srz_comment = CommentSerializer(data=request.POST)
+        if srz_comment.is_valid():
+            srz_comment.save()
+            return Response(srz_comment.data, status=status.HTTP_200_OK)
+        
 
+class CommentUpdateView(APIView):
+    def put(self, request, pk):
+        comment = Comment.objects.get(pk=pk)
+        srz_comment = CommentSerializer(instance=comment, data=request.data, partial=True)
+        if srz_comment.is_valid():
+            srz_comment.save()
+            return Response(srz_comment.data, status=status.HTTP_200_OK)
+        return Response(srz_comment.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def delete(self, reqest, pk):
+        comment = Comment.objects.get(pk=pk)
+        comment.delete()
+        return Response({"message": "Commetn deleted"}, status=status.HTTP_200_OK)  
