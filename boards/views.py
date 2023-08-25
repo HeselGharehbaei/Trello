@@ -26,7 +26,7 @@ class BoardListAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        serializer = self.serializer_class(data=request.POST)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()  
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -69,36 +69,62 @@ class BoardDetailAPIView(APIView):
 
     def delete(self, request, id):
         self.Board.delete()
-        return Response({'message': 'board deleted'}, status=status.HTTP_200_OK)
+        return Response({"message": "board deleted"}, status=status.HTTP_200_OK)
 
         
-class ListView(APIView):
+class ListListAPIView(APIView):
+    serializer_class = ListSerializer
+
     def get(self, request):
         list = List.objects.all()
-        srz_list = ListSerializer(instance=list, many=True)
-        return Response(srz_list.data, status=status.HTTP_200_OK)
+        serializer = self.serializer_class(instance=list, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        srz_list = ListSerializer(data=request.POST)
-        if srz_list.is_valid():
-            srz_list.save()
-            return Response(srz_list.data, status=status.HTTP_201_CREATED)
-        return Response(srz_list.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-class ListUpdateView(APIView):
-    def put(self, request, pk):
-        list = List.objects.get(pk=pk)
-        srz_list = ListSerializer(instance=list, data=request.data, partial=True)
-        if srz_list.is_valid():
-            srz_list.save()
-            return Response(srz_list.data, status=status.HTTP_200_OK)
-        return Response(srz_list.errors, status=status.HTTP_400_BAD_REQUEST)
+class ListDetailAPIView(APIView):
+    serializer_class = ListSerializer
+
+    def setup(self, request, id):
+        try:
+            self.List = List.objects.get(id=id)
+        except List.DoesNotExist:
+            return Response(
+                data={"detail": "List Not Found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return super().setup(request, id)
+
+    def get(self, request, id):
+        serializer = self.serializer_class(
+            instance=self.List,
+            context={"request": request},
+        )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
     
-    def delete(self, request, pk):
-        list = List.objects.get(pk=pk)
-        list.delete()
-        return Response({"masage: list deleted"}, status=status.HTTP_200_OK) 
+    def put(self, request, id):
+        serializer = self.serializer_class(
+            instance=self.List,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, id):
+        self.List.delete()
+        return Response({"message: list deleted"}, status=status.HTTP_200_OK) 
 
 
 class CommentView(APIView):
