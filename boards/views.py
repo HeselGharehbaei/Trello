@@ -127,29 +127,56 @@ class ListDetailAPIView(APIView):
         return Response({"message: list deleted"}, status=status.HTTP_200_OK) 
 
 
-class CommentView(APIView):
+class CommentListView(APIView):
+    serializer_class = CommentSerializer
+
     def get(self, request):
         comment = Comment.objects.all()
-        srz_comment = CommentSerializer(instance=comment)
-        return Response(srz_comment.data, status=status.HTTP_200_OK)
+        serializer = self.serializer_class(instance=comment, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        srz_comment = CommentSerializer(data=request.POST)
-        if srz_comment.is_valid():
-            srz_comment.save()
-            return Response(srz_comment.data, status=status.HTTP_200_OK)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 
-class CommentUpdateView(APIView):
-    def put(self, request, pk):
-        comment = Comment.objects.get(pk=pk)
-        srz_comment = CommentSerializer(instance=comment, data=request.data, partial=True)
-        if srz_comment.is_valid():
-            srz_comment.save()
-            return Response(srz_comment.data, status=status.HTTP_200_OK)
-        return Response(srz_comment.errors, status=status.HTTP_400_BAD_REQUEST)
+class CommentDetailAPIView(APIView):
+    serializer_class = CommentSerializer
 
-    def delete(self, reqest, pk):
-        comment = Comment.objects.get(pk=pk)
-        comment.delete()
-        return Response({"message": "Commetn deleted"}, status=status.HTTP_200_OK)  
+    def setup(self, request, id):
+        try:
+            self.Comment = Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return Response(
+                data={"detail": "Comment Not Found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return super().setup(request, id)
+    
+    def get(self, request, id):
+        serializer = self.serializer_class(
+            instance=self.Comment,
+            context={"request": request},
+        )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
+    
+    def put(self, request, pk):
+        serializer = self.serializer_class(
+            instance=self.Comment,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        self.Comment.delete()
+        return Response({"message": "comment deleted"}, status=status.HTTP_200_OK)  
