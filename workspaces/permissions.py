@@ -13,3 +13,11 @@ class IsWorkspaceAdminOrMemberReadOnly(permissions.BasePermission):
             return True
         return wome.access_level == 2
 
+
+class IsWorkspaceMember(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        try:
+            wome = WorkspacesMembership.objects.get(member=request.user, workspace=obj)
+        except WorkspacesMembership.DoesNotExist:
+            return False
+        return True
