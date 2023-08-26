@@ -4,7 +4,7 @@ from .views import(
     UserLDetailAPIView,
 ) 
 
-
+app_name = "users"
 urlpatterns = [
     path('', UserListAPIView.as_view(), name= "user_list"),
     path('<uuid:id>/', UserLDetailAPIView.as_view(), name= "user_details"),
