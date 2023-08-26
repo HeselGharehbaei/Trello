@@ -127,6 +127,61 @@ class ListDetailAPIView(APIView):
         return Response({"message: list deleted"}, status=status.HTTP_200_OK) 
 
 
+class TaskListAPIView(APIView):
+    serializer_class = TaskSerializer
+
+    def get(self, request):
+        tasks = Task.objects.all()
+        serializer = self.serializer_class(instance=tasks, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    
+
+class TaskDetailAPIView(APIView):
+    serializer_class = TaskSerializer
+
+    def setup(self, request, id):
+        try:
+            self.Task = Task.objects.get(id=id)
+        except Task.DoesNotExist:
+            return Response(
+                data={"detail": "Task Not Found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return super().setup(request, id)
+
+    def get(self, request, id):
+        serializer = self.serializer_class(
+            instance=self.Task,
+            context={"request": request},
+        )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
+    
+    def put(self, request, id):
+        serializer = self.serializer_class(
+            instance=self.Task,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, id):
+        self.Task.delete()
+        return Response({"message: task deleted"}, status=status.HTTP_200_OK)
+
+
 class CommentListView(APIView):
     serializer_class = CommentSerializer
 
