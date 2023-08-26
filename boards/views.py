@@ -235,3 +235,58 @@ class CommentDetailAPIView(APIView):
     def delete(self, request, id):
         self.Comment.delete()
         return Response({"message": "comment deleted"}, status=status.HTTP_200_OK)  
+
+
+class LabelListAPIView(APIView):
+    serializer_class = LabelSerializer
+
+    def get(self, request):
+        labels = Label.objects.all()
+        serializer = self.serializer_class(instance=labels, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LabelDetailAPIView(APIView):
+    serializer_class = LabelSerializer
+
+    def setup(self, request, id):
+        try:
+            self.Label = Label.objects.get(id=id)
+        except Label.DoesNotExist:
+            return Response(
+                data={"detail": "Label Not Found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return super().setup(request, id)
+
+    def get(self, request, id):
+        serializer = self.serializer_class(
+            instance=self.Label,
+            context={"request": request},
+        )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
+    
+    def put(self, request, id):
+        serializer = self.serializer_class(
+            instance=self.Label,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, id):
+        self.Label.delete()
+        return Response({"message: label deleted"}, status=status.HTTP_200_OK) 
