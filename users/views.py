@@ -65,6 +65,7 @@ class UserLDetailAPIView(APIView):
         serializer = self.serializer_class(
             instance=self.user,
             data=request.data,
+            partial=True,
         )
         if not serializer.is_valid():
             return Response(
@@ -81,7 +82,7 @@ class UserLDetailAPIView(APIView):
         serializer = self.serializer_class(
             instance=self.user,
             data=request.data,
-            partial=True,
+           
         )
         if not serializer.is_valid():
             return Response(
