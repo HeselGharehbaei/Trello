@@ -37,4 +37,67 @@ class UserListAPIView(APIView):
             data=serializer.data,
             status=status.HTTP_201_CREATED,
         )
-       
+    
+    
+class UserLDetailAPIView(APIView):
+    serializer_class = UserDetailSerializer
+
+    def setup(self, request: Request, id: UUID):
+        try:
+            self.user= User.objects.get(id=id)
+        except User.DoesNotExist:
+            return Response(
+                data={"detail": "User not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        return super().setup(request, id)
+
+    def get(self, request: Request, id: UUID):
+        serializer = self.serializer_class(
+            instance=self.user,
+        )
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    def put(self, request: Request, id: UUID):
+        serializer = self.serializer_class(
+            instance=self.user,
+            data=request.data,
+        )
+        if not serializer.is_valid():
+            return Response(
+                data=serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer.save()
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    def patch(self, request: Request, id: UUID):
+        serializer = self.serializer_class(
+            instance=self.user,
+            data=request.data,
+            partial=True,
+        )
+        if not serializer.is_valid():
+            return Response(
+                data=serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer.save()
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    def delete(self, request: Request, id: UUID):
+        self.user.delete()
+        return Response(
+            data={"message": "User Deleted"},
+            status=status.HTTP_200_OK,
+        )
+        
