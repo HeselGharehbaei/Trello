@@ -31,7 +31,6 @@ class UserListAPIView(APIView):
                 data=serializer.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
         serializer.save()
         return Response(
             data=serializer.data,
@@ -66,23 +65,6 @@ class UserLDetailAPIView(APIView):
             instance=self.user,
             data=request.data,
             partial=True,
-        )
-        if not serializer.is_valid():
-            return Response(
-                data=serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        serializer.save()
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK,
-        )
-
-    def patch(self, request: Request, id: UUID):
-        serializer = self.serializer_class(
-            instance=self.user,
-            data=request.data,
-           
         )
         if not serializer.is_valid():
             return Response(
