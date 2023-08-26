@@ -1,20 +1,27 @@
 from django.urls import path
 from .views import (
-    BoardsView,
-    BoardUpdateView,
-    ListView,
-    ListUpdateView,
-    CommentView,
-    CommentUpdateView,
+    BoardListAPIView,
+    BoardDetailAPIView,
+    ListListAPIView,
+    ListDetailAPIView,
+    TaskListAPIView,
+    TaskDetailAPIView,
+    CommentListView,
+    CommentDetailAPIView,
+    LabelListAPIView,
+    LabelDetailAPIView,
 )
 
 app_name = 'board'
 urlpatterns = [
-    path('', BoardsView.as_view(), name='board'),
-    path('update/<uuid:id>/', BoardUpdateView.as_view(), name='board_update'),
-    path('list/', ListView.as_view(), name='list'),
-    path('list/update/<uuid:pk>/', ListUpdateView.as_view(), name='list_update'),
-    path('commetn/', CommentView.as_view(), name='commetn'),
-    path('comment/update/<uuid:pk>', CommentUpdateView.as_view(), name='commetn_update')
-
+    path('', BoardListAPIView.as_view(), name='board'),
+    path('update/<uuid:id>/', BoardDetailAPIView.as_view(), name='board_update'),
+    path('list/', ListListAPIView.as_view(), name='list'),
+    path('list/update/<uuid:id>/', ListDetailAPIView.as_view(), name='list_update'),
+    path('task/', TaskListAPIView.as_view(), name='task'),
+    path('task/update/<uuid:id>/', TaskDetailAPIView.as_view(), name='task_update'),
+    path('comment/', CommentListView.as_view(), name='comment'),
+    path('comment/update/<uuid:id>', CommentDetailAPIView.as_view(), name='comment_update'),
+    path('label/', LabelListAPIView.as_view(), name='label'),
+    path('label/update/<uuid:id>', LabelDetailAPIView.as_view(), name='label_update'),
 ]

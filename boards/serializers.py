@@ -1,9 +1,11 @@
 from rest_framework import serializers
-from .models import Board
-from .models import List
-from .models import Task
-from .models import Comment
-from .models import Label
+from .models import (
+    Board,
+    List,
+    Task,
+    Comment,
+    Label,
+)
 
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
