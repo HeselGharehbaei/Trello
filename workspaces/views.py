@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.models import User
 from workspaces.permissions import IsWorkspaceAdminOrMemberReadOnly ,IsWorkspaceMember
+from rest_framework import generics, mixins, status
+from django.http import Http404
 
 
 class workspaceDetail(APIView):
@@ -68,4 +70,13 @@ class WorkspacesMemberDetail(APIView):
             
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WorkspacesMemberList(mixins.ListModelMixin,
+                        generics.GenericAPIView,
+                        mixins.CreateModelMixin):
+    serializer_class = WorkspacesMembershipSerializer
+    permission_classes = [IsWorkspaceAdminOrMemberReadOnly]
+
+
 
