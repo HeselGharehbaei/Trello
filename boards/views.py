@@ -1,6 +1,13 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .permissions import (
+    IsOwnerOrReadOnlyInBoard,
+    IsOwnerOrReadOnlyInList,
+    IsOwnerOrReadOnlyInLabel,
+    IsOwnerOrReadOnlyInTask,
+)
 from .serializers import (
     BoardSerializer,
     ListSerializer,
@@ -34,8 +41,8 @@ class BoardListAPIView(APIView):
 
 
 class BoardDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInBoard]
     serializer_class = BoardSerializer
-    
     def setup(self, request, id):
         try:
             self.Board = Board.objects.get(id=id)
@@ -45,7 +52,9 @@ class BoardDetailAPIView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
         return super().setup(request, id)
+    
         
+
     def get(self, request, id):
         serializer = self.serializer_class(
             instance=self.Board,
@@ -62,12 +71,15 @@ class BoardDetailAPIView(APIView):
             data=request.data,
             partial=True,
         )
+        self.check_object_permissions(request=request, obj=self.Board)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
+        self.check_object_permissions(request=request, obj=self.Board)
         self.Board.delete()
         return Response({"message": "board deleted"}, status=status.HTTP_200_OK)
 
@@ -89,6 +101,7 @@ class ListListAPIView(APIView):
     
 
 class ListDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInList]
     serializer_class = ListSerializer
 
     def setup(self, request, id):
@@ -117,12 +130,14 @@ class ListDetailAPIView(APIView):
             data=request.data,
             partial=True,
         )
+        self.check_object_permissions(request=request, obj=self.List)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, id):
+        self.check_object_permissions(request=request, obj=self.List)
         self.List.delete()
         return Response({"message: list deleted"}, status=status.HTTP_200_OK) 
 
@@ -144,6 +159,7 @@ class TaskListAPIView(APIView):
     
 
 class TaskDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInTask]
     serializer_class = TaskSerializer
 
     def setup(self, request, id):
@@ -172,12 +188,14 @@ class TaskDetailAPIView(APIView):
             data=request.data,
             partial=True,
         )
+        self.check_object_permissions(request=request, obj=self.Task)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, id):
+        self.check_object_permissions(request=request, obj=self.Task)
         self.Task.delete()
         return Response({"message: task deleted"}, status=status.HTTP_200_OK)
 
@@ -233,6 +251,7 @@ class CommentDetailAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
+        self.check_object_permissions(request=request, obj=self.Comment)
         self.Comment.delete()
         return Response({"message": "comment deleted"}, status=status.HTTP_200_OK)  
 
@@ -254,6 +273,7 @@ class LabelListAPIView(APIView):
 
 
 class LabelDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInLabel]
     serializer_class = LabelSerializer
 
     def setup(self, request, id):
@@ -282,11 +302,13 @@ class LabelDetailAPIView(APIView):
             data=request.data,
             partial=True,
         )
+        self.check_object_permissions(request=request, obj=self.Label)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def delete(self, request, id):
+        self.check_object_permissions(request=request, obj=self.Label)
         self.Label.delete()
         return Response({"message: label deleted"}, status=status.HTTP_200_OK) 
