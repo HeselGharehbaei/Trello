@@ -58,5 +58,14 @@ class WorkspacesMemberDetail(APIView):
 
 
 
+    def put(self, request, pk):
+        wmed = self.get_object(pk)
+        serializer = WorkspacesMembershipSerializer(
+            wmed, data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
 
+            
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
