@@ -86,3 +86,6 @@ class WorkspacesMemberList(mixins.ListModelMixin,
             raise Http404
         return query_set
 
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
