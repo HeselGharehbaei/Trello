@@ -7,18 +7,24 @@ from rest_framework import  status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.models import User
+from workspaces.permissions import IsWorkspaceAdminOrMemberReadOnly ,IsWorkspaceMember
 
 
 class workspaceDetail(APIView):
     serializer_class =  WorkspaceSerializer
+    permission_classes = [IsWorkspaceAdminOrMemberReadOnly]
 
     def get(self, request, pk):
         work = get_object_or_404(Workspace, pk=pk)
+        self.check_object_permissions(self.request, work)
+
         serializer = WorkspaceSerializer(work, context={"request": request})
         return Response(serializer.data)
 
     def put(self, request, pk):
         work = get_object_or_404(Workspace, pk=pk)
+        self.check_object_permissions(self.request, work)
+
         serializer = WorkspaceSerializer(work, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -27,16 +33,21 @@ class workspaceDetail(APIView):
 
     def delete(self, request, pk):
         work = get_object_or_404(Workspace, pk=pk)
+        self.check_object_permissions(self.request, work)
+
         work.delete()
         return Response(status=status.HTTP_200_OK)
 
 
 class WorkspacesMemberDetail(APIView):
     serializer_class = WorkspacesMembershipSerializer
- 
+    permission_classes = [IsWorkspaceAdminOrMemberReadOnly]
+
 
     def get_object(self, pk):
         obj = get_object_or_404(WorkspacesMembership, pk=pk)
+        self.check_object_permissions(self.request, obj.workspace)
+
         return obj
 
 
@@ -44,6 +55,8 @@ class WorkspacesMemberDetail(APIView):
         wmed = self.get_object(pk)
         wmed.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
 
 
