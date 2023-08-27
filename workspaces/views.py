@@ -78,5 +78,11 @@ class WorkspacesMemberList(mixins.ListModelMixin,
     serializer_class = WorkspacesMembershipSerializer
     permission_classes = [IsWorkspaceAdminOrMemberReadOnly]
 
-
+    def get_queryset(self):
+        try:
+            workspace = Workspace.objects.get(pk=self.kwargs['pk'])
+            query_set = WorkspacesMembership.objects.filter(workspace=workspace)
+        except:
+            raise Http404
+        return query_set
 
