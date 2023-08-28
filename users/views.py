@@ -9,12 +9,16 @@ from .serializers import (
     UserBriefSerializer,
     UserDetailSerializer,
 )
+from .permissions import IsOwnerOrReadOnlyInUserDetail
+from rest_framework.permissions import AllowAny
 
 
 class UserListAPIView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = UserBriefSerializer
 
     def get(self, request: Request):
+        print(request.user)
         users = (
             User.objects.filter(**request.query_params.dict()).all()
         )
@@ -25,6 +29,7 @@ class UserListAPIView(APIView):
         )
     
     def post(self, request: Request):
+        print(request.user)
         serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             return Response(
@@ -39,6 +44,8 @@ class UserListAPIView(APIView):
     
     
 class UserLDetailAPIView(APIView):
+    
+    permission_classes = [AllowAny]
     serializer_class = UserDetailSerializer
 
     def setup(self, request: Request, id: UUID):
@@ -51,7 +58,8 @@ class UserLDetailAPIView(APIView):
             )
         return super().setup(request, id)
 
-    def get(self, request: Request, id: UUID):
+    def get(self, request: Request, id: UUID): 
+        self.check_object_permissions(request=request, obj=self.user)    
         serializer = self.serializer_class(
             instance=self.user,
         )
@@ -61,6 +69,7 @@ class UserLDetailAPIView(APIView):
         )
 
     def put(self, request: Request, id: UUID):
+        self.check_object_permissions(request=request, obj=self.user) 
         serializer = self.serializer_class(
             instance=self.user,
             data=request.data,
@@ -78,6 +87,7 @@ class UserLDetailAPIView(APIView):
         )
 
     def delete(self, request: Request, id: UUID):
+        self.check_object_permissions(request=request, obj=self.user) 
         self.user.delete()
         return Response(
             data={"message": "User Deleted"},
