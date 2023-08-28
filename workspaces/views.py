@@ -16,15 +16,15 @@ class workspaceDetail(APIView):
     serializer_class =  WorkspaceSerializer
     permission_classes = [IsWorkspaceAdminOrMemberReadOnly]
 
-    def get(self, request, pk):
-        work = get_object_or_404(Workspace, pk=pk)
+    def get(self, request, id):
+        work = get_object_or_404(Workspace, id=id)
         self.check_object_permissions(self.request, work)
 
         serializer = WorkspaceSerializer(work, context={"request": request})
         return Response(serializer.data)
 
-    def put(self, request, pk):
-        work = get_object_or_404(Workspace, pk=pk)
+    def put(self, request, id):
+        work = get_object_or_404(Workspace, id=id)
         self.check_object_permissions(self.request, work)
 
         serializer = WorkspaceSerializer(work, data=request.data)
@@ -33,8 +33,8 @@ class workspaceDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        work = get_object_or_404(Workspace, pk=pk)
+    def delete(self, request, id):
+        work = get_object_or_404(Workspace, id=id)
         self.check_object_permissions(self.request, work)
 
         work.delete()
@@ -46,22 +46,22 @@ class WorkspacesMemberDetail(APIView):
     permission_classes = [IsWorkspaceAdminOrMemberReadOnly]
 
 
-    def get_object(self, pk):
-        obj = get_object_or_404(WorkspacesMembership, pk=pk)
+    def get_object(self, id):
+        obj = get_object_or_404(WorkspacesMembership, id=id)
         self.check_object_permissions(self.request, obj.workspace)
 
         return obj
 
 
-    def delete(self, request, pk):
-        wmed = self.get_object(pk)
+    def delete(self, request, id):
+        wmed = self.get_object(id)
         wmed.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
-    def put(self, request, pk):
-        wmed = self.get_object(pk)
+    def put(self, request, id):
+        wmed = self.get_object(id)
         serializer = WorkspacesMembershipSerializer(
             wmed, data=request.data, context={"request": request})
         if serializer.is_valid():
@@ -80,7 +80,7 @@ class WorkspacesMemberList(mixins.ListModelMixin,
 
     def get_queryset(self):
         try:
-            workspace = Workspace.objects.get(pk=self.kwargs['pk'])
+            workspace = Workspace.objects.get(id=self.kwargs['id'])
             query_set = WorkspacesMembership.objects.filter(workspace=workspace)
         except:
             raise Http404
@@ -105,9 +105,9 @@ class WorkspaceList(mixins.ListModelMixin, mixins.CreateModelMixin,
         workspace_ids = WorkspaceshortSerializer.objects.filter(
             member=self.request.user).order_by('-access_level').values_list('workspace__id', flat=True)
 
-        preserved = Case(*[When(pk=pk, then=pos)
-                           for pos, pk in enumerate(workspace_ids)])
-        return Workspace.objects.filter(pk__in=workspace_ids).order_by(preserved)
+        preserved = Case(*[When(id=id, then=pos)
+                           for pos, id in enumerate(workspace_ids)])
+        return Workspace.objects.filter(id__in=workspace_ids).order_by(preserved)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
