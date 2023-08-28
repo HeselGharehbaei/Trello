@@ -112,4 +112,7 @@ class WorkspaceList(mixins.ListModelMixin, mixins.CreateModelMixin,
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 
