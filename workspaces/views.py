@@ -101,4 +101,12 @@ class WorkspaceList(mixins.ListModelMixin, mixins.CreateModelMixin,
 
         return WorkspaceshortSerializer
 
+    def get_queryset(self):
+        workspace_ids = WorkspaceshortSerializer.objects.filter(
+            member=self.request.user).order_by('-access_level').values_list('workspace__id', flat=True)
+
+        preserved = Case(*[When(pk=pk, then=pos)
+                           for pos, pk in enumerate(workspace_ids)])
+        return Workspace.objects.filter(pk__in=workspace_ids).order_by(preserved)
+
 
