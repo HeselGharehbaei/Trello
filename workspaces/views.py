@@ -10,7 +10,7 @@ from users.models import User
 from workspaces.permissions import IsWorkspaceAdminOrMemberReadOnly ,IsWorkspaceMember
 from rest_framework import generics, mixins, status
 from django.http import Http404
-
+from django.db.models import Case, When
 
 class workspaceDetail(APIView):
     serializer_class =  WorkspaceSerializer
@@ -89,3 +89,16 @@ class WorkspacesMemberList(mixins.ListModelMixin,
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+
+
+
+class WorkspaceList(mixins.ListModelMixin, mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return WorkspaceshortSerializer 
+
+        return WorkspaceshortSerializer
+
+
