@@ -109,4 +109,7 @@ class WorkspaceList(mixins.ListModelMixin, mixins.CreateModelMixin,
                            for pos, pk in enumerate(workspace_ids)])
         return Workspace.objects.filter(pk__in=workspace_ids).order_by(preserved)
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
