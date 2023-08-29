@@ -1,12 +1,15 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
 from .permissions import (
     IsOwnerOrReadOnlyInBoard,
     IsOwnerOrReadOnlyInList,
     IsOwnerOrReadOnlyInLabel,
     IsOwnerOrReadOnlyInTask,
+    IsMemberBoardOrnot,
+    IsMemberOfTheTask,
 )
 from .serializers import (
     BoardSerializer,
@@ -24,38 +27,26 @@ from .models import (
 )
 
 
-class BoardListAPIView(APIView):
+class BoardViewset(viewsets.ViewSet):
+    permission_classes = [IsOwnerOrReadOnlyInBoard, IsMemberBoardOrnot]
     serializer_class = BoardSerializer
 
-    def get(self, request):
+    def Board(self, request, id):
+        return Board.objects.get(pk=id)
+    
+    def list(self, request):
         boards = Board.objects.all()
         serializer = self.serializer_class(instance=boards, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()  
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
 
-
-class BoardDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInBoard]
-    serializer_class = BoardSerializer
-    def setup(self, request, id):
-        try:
-            self.Board = Board.objects.get(id=id)
-        except Board.DoesNotExist:
-            return Response(
-                data={"detail": "Board Not Found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return super().setup(request, id)
-    
-        
-
-    def get(self, request, id):
+    def retrieve(self, request, id):
         serializer = self.serializer_class(
             instance=self.Board,
             context={"request": request},
@@ -65,7 +56,7 @@ class BoardDetailAPIView(APIView):
             status=status.HTTP_200_OK,
         )
     
-    def put(self, request, id):
+    def update(self, request, id):
         serializer = self.serializer_class(
             instance=self.Board,
             data=request.data,
@@ -78,43 +69,32 @@ class BoardDetailAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id):
+    def destroy(self, request, id):
         self.check_object_permissions(request=request, obj=self.Board)
         self.Board.delete()
         return Response({"message": "board deleted"}, status=status.HTTP_200_OK)
 
         
-class ListListAPIView(APIView):
+class ListViewSet(viewsets.ViewSet):
+    permission_classes = [IsOwnerOrReadOnlyInList]
     serializer_class = ListSerializer
+    
+    def List(self, request, id):
+        return List.objects.get(pk=id)
 
-    def get(self, request):
+    def list(self, request):
         list = List.objects.all()
         serializer = self.serializer_class(instance=list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
-class ListDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInList]
-    serializer_class = ListSerializer
-
-    def setup(self, request, id):
-        try:
-            self.List = List.objects.get(id=id)
-        except List.DoesNotExist:
-            return Response(
-                data={"detail": "List Not Found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return super().setup(request, id)
-
-    def get(self, request, id):
+    def retrieve(self, request, id):
         serializer = self.serializer_class(
             instance=self.List,
             context={"request": request},
@@ -124,7 +104,7 @@ class ListDetailAPIView(APIView):
             status=status.HTTP_200_OK,
         )
     
-    def put(self, request, id):
+    def update(self, request, id):
         serializer = self.serializer_class(
             instance=self.List,
             data=request.data,
@@ -136,43 +116,32 @@ class ListDetailAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def delete(self, request, id):
+    def destroy(self, request, id):
         self.check_object_permissions(request=request, obj=self.List)
         self.List.delete()
         return Response({"message: list deleted"}, status=status.HTTP_200_OK) 
 
 
-class TaskListAPIView(APIView):
+class TaskViewSet(viewsets.ViewSet):
     serializer_class = TaskSerializer
-
-    def get(self, request):
+    permission_classes = [IsOwnerOrReadOnlyInTask]
+    
+    def Task(self, request, id):
+        return Task.objects.get(pk=id)
+    
+    def list(self, request):
         tasks = Task.objects.all()
         serializer = self.serializer_class(instance=tasks, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
     
-
-class TaskDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInTask]
-    serializer_class = TaskSerializer
-
-    def setup(self, request, id):
-        try:
-            self.Task = Task.objects.get(id=id)
-        except Task.DoesNotExist:
-            return Response(
-                data={"detail": "Task Not Found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return super().setup(request, id)
-
-    def get(self, request, id):
+    def retrieve(self, request, id):
         serializer = self.serializer_class(
             instance=self.Task,
             context={"request": request},
@@ -182,7 +151,7 @@ class TaskDetailAPIView(APIView):
             status=status.HTTP_200_OK,
         )
     
-    def put(self, request, id):
+    def update(self, request, id):
         serializer = self.serializer_class(
             instance=self.Task,
             data=request.data,
@@ -194,44 +163,34 @@ class TaskDetailAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def delete(self, request, id):
+    def destory(self, request, id):
         self.check_object_permissions(request=request, obj=self.Task)
         self.Task.delete()
         return Response({"message: task deleted"}, status=status.HTTP_200_OK)
 
 
-class CommentListView(APIView):
+class CommentViewSet(viewsets.ViewSet):
     serializer_class = CommentSerializer
+    permission_classes = []
 
-    def get(self, request):
+    def Commetn(self, request, id):
+        return Comment.objects.get(pk=id)
+
+    def list(self, request):
         comment = Comment.objects.all()
         serializer = self.serializer_class(instance=comment, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-
-class CommentDetailAPIView(APIView):
-    serializer_class = CommentSerializer
-
-    def setup(self, request, id):
-        try:
-            self.Comment = Comment.objects.get(id=id)
-        except Comment.DoesNotExist:
-            return Response(
-                data={"detail": "Comment Not Found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return super().setup(request, id)
-    
-    def get(self, request, id):
+    def retrieve(self, request, id):
         serializer = self.serializer_class(
-            instance=self.Comment,
+            instance=self.Commetn,
             context={"request": request},
         )
         return Response(
@@ -239,9 +198,9 @@ class CommentDetailAPIView(APIView):
             status=status.HTTP_200_OK,
         )
     
-    def put(self, request, pk):
+    def update(self, request, pk):
         serializer = self.serializer_class(
-            instance=self.Comment,
+            instance=self.Commetn,
             data=request.data,
             partial=True,
         )
@@ -250,43 +209,32 @@ class CommentDetailAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id):
-        self.check_object_permissions(request=request, obj=self.Comment)
-        self.Comment.delete()
+    def destory(self, request, id):
+        self.check_object_permissions(request=request, obj=self.Commetn)
+        self.Commetn.delete()
         return Response({"message": "comment deleted"}, status=status.HTTP_200_OK)  
 
 
-class LabelListAPIView(APIView):
+class LabelListViewSet(viewsets.ViewSet):
+    permission_classes = [IsOwnerOrReadOnlyInLabel]
     serializer_class = LabelSerializer
+    
+    def Label(self, request, id):
+        return Label.objects.get(pk=id)
 
-    def get(self, request):
+    def list(self, request):
         labels = Label.objects.all()
         serializer = self.serializer_class(instance=labels, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
-    def post(self, request):
+    def create(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class LabelDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated,IsOwnerOrReadOnlyInLabel]
-    serializer_class = LabelSerializer
-
-    def setup(self, request, id):
-        try:
-            self.Label = Label.objects.get(id=id)
-        except Label.DoesNotExist:
-            return Response(
-                data={"detail": "Label Not Found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        return super().setup(request, id)
-
-    def get(self, request, id):
+    def retrieve(self, request, id):
         serializer = self.serializer_class(
             instance=self.Label,
             context={"request": request},
@@ -296,7 +244,7 @@ class LabelDetailAPIView(APIView):
             status=status.HTTP_200_OK,
         )
     
-    def put(self, request, id):
+    def update(self, request, id):
         serializer = self.serializer_class(
             instance=self.Label,
             data=request.data,
@@ -311,4 +259,5 @@ class LabelDetailAPIView(APIView):
     def delete(self, request, id):
         self.check_object_permissions(request=request, obj=self.Label)
         self.Label.delete()
-        return Response({"message: label deleted"}, status=status.HTTP_200_OK) 
+        return Response({"message: label deleted"}, status=status.HTTP_200_OK)
+     
