@@ -1,9 +1,9 @@
 from django.db import models
-from core.models import BaseModel, TimeStampMixin
+from core.models import BaseModel, TimeStampMixin, SoftDeleteModel
 from django.utils.translation import gettext_lazy as _
 
 
-class Board(BaseModel, TimeStampMixin):
+class Board(BaseModel, TimeStampMixin, SoftDeleteModel):
     workspace = models.ForeignKey(
         "workspaces.Workspace",
         on_delete=models.CASCADE,
@@ -40,7 +40,33 @@ class Board(BaseModel, TimeStampMixin):
         return self.title
 
 
-class Task(BaseModel, TimeStampMixin):
+class List(BaseModel, TimeStampMixin, SoftDeleteModel):
+    board = models.ForeignKey(
+        "Board",
+        on_delete=models.CASCADE,
+        related_name="lists",
+    )
+    title = models.CharField(
+        verbose_name=_("Title"),
+        help_text=_("enter the title"),
+        max_length=50,
+        null=False,
+        blank=False,
+    ) 
+    order = models.DecimalField(
+        max_digits=7,
+        decimal_places=6,
+        blank=True,
+        null=True,
+    )
+    def get_task(self):
+        return self.tasks.all()
+    
+    def __str__(self):
+        return self.title
+
+
+class Task(BaseModel, TimeStampMixin, SoftDeleteModel):
     board_list = models.ForeignKey(
         "List",
         on_delete=models.CASCADE,
@@ -107,20 +133,7 @@ class Task(BaseModel, TimeStampMixin):
         return self.title
 
 
-class Label(BaseModel, TimeStampMixin):
-    board = models.ForeignKey(
-        "Board",
-        on_delete=models.CASCADE,
-        related_name='labels',
-    )
-    title = models.CharField(max_length=50, blank=True, null=True)
-    color = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.title
-
-
-class Comment(BaseModel, TimeStampMixin):
+class Comment(BaseModel, TimeStampMixin, SoftDeleteModel):
     task = models.ForeignKey(
         "Task",
         on_delete=models.CASCADE,
@@ -143,27 +156,15 @@ class Comment(BaseModel, TimeStampMixin):
         return self.text
 
 
-class List(BaseModel, TimeStampMixin):
+class Label(BaseModel, TimeStampMixin, SoftDeleteModel):
     board = models.ForeignKey(
         "Board",
         on_delete=models.CASCADE,
-        related_name="lists",
+        related_name='labels',
     )
-    title = models.CharField(
-        verbose_name=_("Title"),
-        help_text=_("enter the title"),
-        max_length=50,
-        null=False,
-        blank=False,
-    ) 
-    order = models.DecimalField(
-        max_digits=7,
-        decimal_places=6,
-        blank=True,
-        null=True,
-    )
-    def get_task(self):
-        return self.tasks.all()
-    
+    title = models.CharField(max_length=50, blank=True, null=True)
+    color = models.CharField(max_length=50)
+
     def __str__(self):
         return self.title
+
