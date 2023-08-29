@@ -24,6 +24,20 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = '__all__'
 
+    def validate(self, data):
+        if data['start_date'] != ['finished_date']:
+            raise serializers.ValidationError(
+                'The start time and the end time should not be equal'
+            )
+        return data
+    
+    def validate(self, data):
+        if data['deadline'] != ['start_date']:
+            raise serializers.ValidationError(
+                'The start time and the deadline should not be equal'
+            )
+        
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
