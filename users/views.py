@@ -4,6 +4,7 @@ from .models import User
 from .serializers import (
     UserBriefSerializer,
     UserDetailSerializer,
+    UserDashboardSerializer,
 )
 from .permissions import IsOwnerOrReadOnlyInUserDetail
 
@@ -20,4 +21,13 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action in ['list']:
             return UserBriefSerializer
         return self.serializer_class 
+
+
+class UserDashboardViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsOwnerOrReadOnlyInUserDetail]
+    serializer_class = UserDashboardSerializer
+    lookup_field = "id"
+
+    def get_queryset(self):
+        return User.objects.filter(**self.request.query_params.dict()).all() 
     
