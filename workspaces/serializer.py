@@ -1,12 +1,25 @@
 from rest_framework import serializers
 from .models import Workspace, WorkspacesMembership
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserWorkspacesSerializer,UserBriefSerializer
 
+
+
+class WorkspacesMembershipSerializer(serializers.ModelSerializer):
+    
+    username = serializers.CharField(source='member.username', read_only=True)
+    email = serializers.CharField(source='member.email', read_only=True)
+    
+
+    
+    class Meta:
+        model = WorkspacesMembership
+        fields = ['id',  'username',
+                  'email',  'access_level']
 
 class WorkspaceSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    members = serializers.SerializerMethodField(many=True)
+    owner = UserBriefSerializer(read_only=True)
+    members = serializers.SerializerMethodField()
     boards = serializers.SerializerMethodField()
 
     def get_members(self, obj):
@@ -31,17 +44,7 @@ class WorkspaceSerializer(serializers.ModelSerializer):
  
 
 
-class WorkspacesMembershipSerializer(serializers.ModelSerializer):
-    
-    username = serializers.CharField(source='member.username', read_only=True)
-    email = serializers.CharField(source='member.email', read_only=True)
-    
 
-    
-    class Meta:
-        model = WorkspacesMembership
-        fields = ['id',  'username',
-                  'email',  'access_level']
 
 
 class WorkspaceshortSerializer(serializers.ModelSerializer):
