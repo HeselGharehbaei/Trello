@@ -35,6 +35,9 @@ class Board(BaseModel, TimeStampMixin):
 
     def get_list(self):
         return self.lists.all()
+    
+    def __str__(self):
+        return self.title
 
 
 class Task(BaseModel, TimeStampMixin):
@@ -99,6 +102,9 @@ class Task(BaseModel, TimeStampMixin):
 
     def get_comment(self):
         return self.comments.all()
+    
+    def __str__(self):
+        return self.title
 
 
 class Label(BaseModel, TimeStampMixin):
@@ -109,6 +115,9 @@ class Label(BaseModel, TimeStampMixin):
     )
     title = models.CharField(max_length=50, blank=True, null=True)
     color = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.title
 
 
 class Comment(BaseModel, TimeStampMixin):
@@ -129,6 +138,9 @@ class Comment(BaseModel, TimeStampMixin):
         null=True,
         blank=True,
     )
+
+    def __str__(self):
+        return self.text
 
 
 class List(BaseModel, TimeStampMixin):
@@ -151,4 +163,7 @@ class List(BaseModel, TimeStampMixin):
         null=True,
     )
     def get_task(self):
-        return self.tasks.all()    
+        return self.tasks.all()
+    
+    def __str__(self):
+        return self.title
