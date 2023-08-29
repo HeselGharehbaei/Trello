@@ -8,7 +8,7 @@ from .views import(
 user_router = SimpleRouter()
 user_dashboard_router = SimpleRouter()
 user_router.register("",  UserViewSet, basename="users")
-user_dashboard_router.register("",  UserDashboardViewSet, basename="dashboard")
+user_dashboard_router.register("dashboard",  UserDashboardViewSet, basename="dashboard")
 
 app_name = "users"
 urlpatterns = [
