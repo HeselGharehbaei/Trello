@@ -18,10 +18,10 @@ class WorkspacesMembershipSerializer(serializers.ModelSerializer):
                   'email',  'access_level','members']
 
 class WorkspaceSerializer(serializers.ModelSerializer):
-    owner = UserBriefSerializer(read_only=True)
+   
     members = serializers.SerializerMethodField()
     boards = serializers.SerializerMethodField()
-
+    owner = UserBriefSerializer(read_only=True, default=serializers.CurrentUserDefault()) 
     def get_members(self, obj):
         queryset = WorkspacesMembership.objects.filter(workspace=obj)
         return WorkspacesMembershipSerializer(queryset, many=True, context={"request": self.context['request']}).data
@@ -30,16 +30,20 @@ class WorkspaceSerializer(serializers.ModelSerializer):
     def get_boards(self, obj):
         return [board.name for board in obj.get_boards()]
     
-
+    def create(self, validated_data):
+        validated_data['owner'] = self.context['request'].user  # تنظیم owner با اطلاعات کاربر جاری
+        return super().create(validated_data)
+    
     class Meta:
         model = Workspace
         fields = [
-            'id',
+           'id',
             'owner',
             'title',
             'description',
             'members'
         ]
+        #fields ='__all__'
         read_only_fields = ['owner']
  
 
@@ -50,4 +54,4 @@ class WorkspaceSerializer(serializers.ModelSerializer):
 class WorkspaceshortSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workspace
-        fields = ['id', 'title']
+        fields = ['title',"id"]

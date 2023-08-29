@@ -2,12 +2,12 @@ from django.db import models
 from core.models import BaseModel , TimeStampMixin , SoftDeleteModel 
 
 
-class Workspace(BaseModel,TimeStampMixin, SoftDeleteModel):
+class Workspace(BaseModel ,TimeStampMixin, SoftDeleteModel):
     owner = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name='owned_workspace')
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
-    members = models.ManyToManyField(
+    member = models.ManyToManyField(
         "users.User", through='WorkspacesMembership', through_fields=('workspace', 'member'),related_name='membered_workspace')
 
 
@@ -19,7 +19,7 @@ class Workspace(BaseModel,TimeStampMixin, SoftDeleteModel):
         return self.title
 
 
-class WorkspacesMembership(TimeStampMixin, BaseModel, SoftDeleteModel):
+class WorkspacesMembership(BaseModel ,TimeStampMixin,  SoftDeleteModel):
     class Access(models.IntegerChoices):
         MEMBER = 1           
         ADMIN = 2             
