@@ -1,11 +1,13 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import SimpleRouter
 from .views import(
-    UserListAPIView,
-    UserLDetailAPIView,
+    UserViewSet,
 ) 
+
+router = SimpleRouter()
+router.register("",  UserViewSet, basename="users")
 
 app_name = "users"
 urlpatterns = [
-    path('', UserListAPIView.as_view(), name= "user_list"),
-    path('<uuid:id>/', UserLDetailAPIView.as_view(), name= "user_details"),
+    path("", include(router.urls)),
 ]
