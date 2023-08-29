@@ -1,5 +1,5 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+
 from .models import User
 from .serializers import (
     UserBriefSerializer,
@@ -9,7 +9,7 @@ from .permissions import IsOwnerOrReadOnlyInUserDetail
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnlyInUserDetail]
+    permission_classes = [IsOwnerOrReadOnlyInUserDetail]
     serializer_class = UserDetailSerializer
     lookup_field = "id"  
 
