@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import BaseModel , TimeStampMixin , SoftDeleteModel ,
+from core.models import BaseModel , TimeStampMixin , SoftDeleteModel 
 
 
 class Workspace(BaseModel,TimeStampMixin, SoftDeleteModel):

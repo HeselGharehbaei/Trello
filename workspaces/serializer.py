@@ -15,7 +15,7 @@ class WorkspacesMembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkspacesMembership
         fields = ['id',  'username',
-                  'email',  'access_level']
+                  'email',  'access_level','members']
 
 class WorkspaceSerializer(serializers.ModelSerializer):
     owner = UserBriefSerializer(read_only=True)
