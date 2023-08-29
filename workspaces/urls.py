@@ -3,7 +3,7 @@ from workspaces.views import WorkspaceList, WorkspaceDetail, WorkspacesMemberLis
 
 urlpatterns = [
     path('', WorkspaceList.as_view()),
-    path('<uuid:uuid>/', WorkspaceDetail.as_view()),
+    path('<uuid:id>/', WorkspaceDetail.as_view()),
     path('<uuid:id>/members/', WorkspacesMemberList.as_view()),
     path('members/<uuid:id>/', WorkspacesMemberDetail.as_view()),
 
