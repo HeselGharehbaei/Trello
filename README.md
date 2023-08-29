@@ -16,9 +16,13 @@ And it is being done in collaboration with these following developers:
 ![prototype](prototype02.jpg)
 
 ------------------------------------
-### the initial ERD of project:
+#### the initial ERD of project:
 
 ![ER Diagram](Database-ER-diagram.png)
+
+## and the _FINAL_ ERD of project:
+
+![the Final ER Diagram](Database-ER-diagram_final%20version.png)
 
 ------------------------------------
 
