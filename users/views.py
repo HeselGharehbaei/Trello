@@ -1,12 +1,14 @@
 from rest_framework import viewsets
-
+from rest_framework.views import APIView
 from .models import User
 from .serializers import (
     UserBriefSerializer,
     UserDetailSerializer,
     UserDashboardSerializer,
 )
-from .permissions import IsOwnerOrReadOnlyInUserDetail
+from .permissions import IsOwnerOrReadOnlyInUserDetail, IsOwnerOrReadOnlyInUserDashboard
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -23,11 +25,12 @@ class UserViewSet(viewsets.ModelViewSet):
         return self.serializer_class 
 
 
-class UserDashboardViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsOwnerOrReadOnlyInUserDetail]
-    serializer_class = UserDashboardSerializer
-    lookup_field = "id"
+class UserDashboardViewSet(viewsets.ViewSet):
+    permission_classes = [IsOwnerOrReadOnlyInUserDashboard]
+    queryset = User.objects.all() 
 
-    def get_queryset(self):
-        return User.objects.filter(**self.request.query_params.dict()).all() 
+    def retrieve(self, request, pk):
+        user = get_object_or_404(self.queryset, pk=pk)
+        serializer_class = UserDashboardSerializer(instance=user)
+        return Response(data=serializer_class.data)
     
