@@ -15,7 +15,7 @@ class WorkspacesMembershipSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkspacesMembership
         fields = ['id',  'username',
-                  'email',  'access_level','members']
+                  'email',  'access_level','member']
 
 class WorkspaceSerializer(serializers.ModelSerializer):
    
@@ -41,7 +41,8 @@ class WorkspaceSerializer(serializers.ModelSerializer):
             'owner',
             'title',
             'description',
-            'members'
+            'members',
+            'boards'
         ]
         #fields ='__all__'
         read_only_fields = ['owner']
