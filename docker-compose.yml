@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  database:
+    container_name: database
+    image: postgres
+    environment:
+      POSTGRES_USER: myprojectuser
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: trelloproject
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: always
+  
+  
+  app:
+    build:
+      context: .
+    image: app
+    container_name: django-app
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --no-input --clear &&
+             gunicorn trello.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - static:/usr/src/app/static
+      - media:/usr/src/app/media
+    depends_on:
+      - database
+    environment:
+      - DEBUG=False
+      - ALLOWED_HOSTS=*
+      - DATABASE-NAME=trelloproject
+      - DATABASE-USER=myprojectuser
+      - DATABASE-PASSWORD=password
+      - DATABASE-HOST=database
+      - DATABASE-PORT=5432
+  
+  
+  nginx:
+    image: nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static:/var/www/static
+      - media:/var/www/media
+
+volumes:
+  postgres:
+  static:
+  media:

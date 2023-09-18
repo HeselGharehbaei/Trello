@@ -15,8 +15,8 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
     image = models.FileField(
         _("Image"), 
         upload_to="uploads/photos", 
-        blank= True, 
-        null= True,
+        blank=True, 
+        null=True,
     )
 
     def get_user_owned_workspace(self):
@@ -26,9 +26,8 @@ class User(AbstractUser, BaseModel, SoftDeleteModel):
         return self.membered_workspace.all()
     
     def get_completed_task(self):
-        return self.tasks.filter(board_list__title= "Done", finished_date__isnull= False,) 
-
+        return self.tasks.filter(board_list__title="Done", finished_date__isnull=False) 
 
     def __str__(self):
-        return self.username 
+        return self.username
     
