@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from rest_framework.views import APIView
 from .models import User
 from .serializers import (
     UserBriefSerializer,
@@ -9,6 +8,7 @@ from .serializers import (
 from .permissions import IsOwnerOrReadOnlyInUserDetail, IsOwnerOrReadOnlyInUserDashboard
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from django.contrib.auth.hashers import make_password
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -23,6 +23,14 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action in ['list']:
             return UserBriefSerializer
         return self.serializer_class 
+    
+    def perform_create(self, serializer):
+        password = make_password(self.request.data['password'])
+        serializer.save(password=password)
+
+    def perform_update(self, serializer):
+        password = make_password(self.request.data['password'])
+        serializer.save(password=password)              
 
 
 class UserDashboardViewSet(viewsets.ViewSet):
